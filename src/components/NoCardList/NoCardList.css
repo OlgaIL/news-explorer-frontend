@@ -1,0 +1,50 @@
+.noCardList {
+	margin: 0;
+	background-color: #F5F6F7;
+	/*overflow: hidden;*/
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding-top: 80px;
+	padding-bottom: 80px;
+
+}
+
+.noCardList_show{
+	display: none;
+}
+
+
+.noCardList__title{
+	font-family: ' Roboto Slab', 'Times New Roman', Times, serif;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 26px;
+	line-height: 1.15;
+	color: #1A1B22;
+	margin: 40px 0 16px 0;
+}
+
+.noCardList__text {
+	font-family: 'Roboto', Arial, Helvetica, sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 18px;
+	line-height: 1.33;
+	color: #B6BCBF;
+	margin: 0;
+	text-align: center;
+}
+
+@media screen and (max-width: 1000px) {
+	.noCardList{
+		padding-top: 40px;
+		padding-bottom: 40px;
+	}
+
+	.noCardList__title{
+		font-size: 24px;
+	}
+
+}

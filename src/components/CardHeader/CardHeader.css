@@ -1,0 +1,77 @@
+.element__top-panel{
+	box-sizing: border-box;
+	position: absolute;
+	top:0px;
+	left:0px;
+	padding: 24px;
+	width: 100%;
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: space-between;
+}
+
+
+.element__tag{
+	background-color: #fff;
+	height:40px;
+	border-radius: 10px;
+	padding: 0px 12px 0px 12px;
+
+	display: none;
+	justify-content: center;
+	align-items: center;
+	
+	font-style: normal;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 1.71;
+	color: #000000;
+	margin: 0px;
+
+}
+
+.element__tag_title{
+	font-size: 10px;
+	font-weight: 500;
+	font-size: 10px;
+	line-height: 12px;
+}
+
+
+.element__tag_show {
+	display: flex;
+}
+
+.element__button {
+	background-color: #fff;
+	width: 40px;
+	height:40px;
+	cursor: pointer;
+	padding: 0;
+	border-radius: 8px;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.element__button-img:focus {
+	outline: none;
+}
+
+
+.element__button-img {
+	height: 19px;
+	border: 0;
+	opacity: 0.5;
+	cursor: pointer;
+	transition: opacity .4s;
+}
+
+.element__button-img_saved {
+	opacity: 1;
+}
+
+.element__button:hover .element__button-img{
+	opacity: 1;
+}

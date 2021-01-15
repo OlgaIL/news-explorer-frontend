@@ -1,0 +1,104 @@
+.cardList{
+	padding: 0px 104px;
+	background: #F5F6F7;
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+}
+
+
+.cardList__header{
+	font-family: 'Roboto Slab', 'Times New Roman', Times, serif;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 40px;
+	line-height: 1.15;
+	color: #1A1B22;
+	margin-top: 80px;
+	margin-bottom: 0;
+}
+
+.cardList__button{
+	background-color: #fff;
+	border-radius: 80px;
+	padding: 0px 12px 0px 12px;
+	border: 0;
+	cursor: pointer;
+	font-family: 'Roboto', Arial, Helvetica, sans-serif;
+	font-style: normal;
+	font-weight: 500;
+	font-size: 18px;
+	line-height: 1.33;
+	color: #1A1B22;
+	
+	text-align: center;
+	height:64px;
+	width: 288px;
+	align-self: center;
+	margin-bottom: 80px;
+
+	transition: background-color 0.4s linear;
+}
+
+.cardList__button:hover {
+	background-color: #e8e8e9;
+}
+
+.cardList__button:focus{
+	outline-style: none;
+}
+
+.cardList__list{
+	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+	grid-column-gap: 16px;
+	grid-row-gap: 16px;
+	padding: 0;
+	list-style: none;
+	margin: 64px 0px;
+}
+
+
+@media screen and (max-width: 1000px) {
+	.cardList {
+		padding: 0px 40px;
+	}
+
+	.cardList__list{
+		grid-template-columns: repeat(auto-fit, minmax(224px, 1fr));
+		grid-column-gap: 8px;
+		grid-row-gap: 8px;
+		margin: 32px 0px;
+	}
+
+	.cardList__header{
+		font-size: 30px;
+		line-height: 1.13;
+		margin-top: 40px;
+	}
+
+	.cardList__button{
+		margin-bottom: 40px;
+	}
+}
+
+@media screen and (max-width: 500px) {
+	.cardList {
+		padding: 0px 16px;
+	}
+
+	.cardList__list{
+		margin: 24px 0px;
+		grid-row-gap: 10px;
+	}
+
+	.cardList__header{
+		margin-top:32px;
+	}
+
+	.cardList__button{
+		margin-bottom: 32px;
+	}
+
+}
