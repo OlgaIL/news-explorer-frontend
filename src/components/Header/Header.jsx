@@ -37,10 +37,10 @@ function Header(props) {
 		<header className={headerClass}>
 			<NavLink to="/" exact className={logoClass} activeClassName="header__logotext_active" onClick={props.onClickNotSavedPage}>NewsExplorer</NavLink>
 			<ul className="header__menu-icon" tabindex='2'>
-					<div className={lineClass}></div>
-					<div className={lineClass}></div>
+					<li className={lineClass}></li>
+					<li className={lineClass}></li>
 			</ul>
-			<nav className={headerNavClass} tabindex='1'>
+			<nav className={headerNavClass}>
 				<NavLink to="/" exact className={linkClass} activeClassName="header__link_active" onClick={props.onClickNotSavedPage}>Главная</NavLink>
 				{ props.loggedIn ?  <Profile  {...props} /> : <button type="button" className={buttonClass} onClick={props.onLogin}>Авторизоваться</button> }
 			</nav>

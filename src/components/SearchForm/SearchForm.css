@@ -76,7 +76,7 @@
 
 }
 
-@media screen and (min-width: 321px)  and (max-width: 780px) {
+@media screen and (min-width: 431px)  and (max-width: 780px) {
 	.searchForm__input{
 		padding-left: 24px;
 		padding-right: 24px;
@@ -100,18 +100,23 @@
 
 }
 
-@media all and (max-width: 320px) {
+@media all and (min-width: 320px)  and (max-width: 430px) {
+	.searchForm__form{
+		margin-top: 10px;
+	}
+}
+
+@media all and (max-width: 430px) {
 		.searchForm__form{
 			flex-direction: column;
 			justify-content: start;
-			margin-top:122px;
 		}
 
 		.searchForm{
 			max-width: 90%;
 			width: 100%;
-			padding-top: 30px;
-			padding-bottom: 30px;
+			padding-top: 25px;
+			padding-bottom: 25px;
 		}
 
 		.searchForm__header{
@@ -123,5 +128,16 @@
 			padding-left: 16px;
 		}
 
+}
+
+
+@media all and (max-width: 320px) {
+	.searchForm__form{
+		margin-top: 122px;
+	}
+	.searchForm{
+		padding-top: 30px;
+		padding-bottom: 30px;
+	}
 }
 

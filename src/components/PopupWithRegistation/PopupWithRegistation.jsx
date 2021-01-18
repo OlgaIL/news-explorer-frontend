@@ -48,7 +48,7 @@ function PopupWithRegistation(props) {
 
 return(
 	<PopupWithForm 
-		name = "login"
+		name = "registration"
 		title = "Регистрация"
 		submitText = "Зарегистрироваться"
 		onSubmit={handleSubmit}
@@ -70,6 +70,7 @@ return(
 			isOpen={props.isOpen}
 			onChange={handleChange}
 			elementValue={inputValue.email}
+			formname = "registration"
 			/>
 
 	<ElementForm 
@@ -82,6 +83,8 @@ return(
 			isOpen={props.isOpen}
 			onChange={handleChange}
 			elementValue={inputValue.password}
+			formname = "registration"
+			
 		/>
 		
 		
@@ -94,7 +97,7 @@ return(
 			elementMax="60"
 			onChange={handleChange}
 			elementValue={inputValue.name}
-			
+			formname = "registration"
 			/>
 
 

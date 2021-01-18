@@ -33,7 +33,7 @@ function SearchForm() {
 			<h1 className="searchForm__header">Что творится в мире?</h1>
 			<p className="searchForm__text">Находите самые свежие статьи на любую тему и сохраняйте в своём личном кабинете.</p>
 			<form className="searchForm__form" onSubmit={handleSubmit} >
-					<input type="text"name="searchPhrase" placeholder="Введите тему новости" value={inputValue} className="searchForm__input" onChange={handleChange}/>
+					<input type="text" name="searchPhrase" required placeholder="Введите тему новости" value={inputValue} className="searchForm__input" onChange={handleChange}/>
 					<SubmitButton submitStatus={submitStatus} submitType={submitType} submitText="Искать" />
 			</form>
 		</section>

@@ -73,7 +73,7 @@
 
 
 
-@media screen and (min-width: 321px)  and (max-width: 780px) {
+@media screen and (min-width: 431px)  and (max-width: 780px) {
 	.form__submit{
 		min-height: 56px;
 	}
@@ -84,9 +84,9 @@
 
 }
 
-@media all and (max-width: 320px) {
+@media all and (max-width: 430px) {
 		.form__submit_type_search{
-			margin-top: 16px;
+			margin-top: 8px;
 			width: 100%;
 			margin-left: 0px;
 		}
@@ -97,3 +97,8 @@
 	
 }
 
+@media all and (max-width: 320px) {
+	.form__submit_type_search{
+		margin-top: 16px;
+	}
+}

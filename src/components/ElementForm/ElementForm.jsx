@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 
 import './ElementForm.css';
 
-function ElementForm ({elementLabel, elementName, elementType, elementPlaceHolder, elementMin, elementMax, isOpen, onChange, elementValue}) {
+function ElementForm ({elementLabel, elementName, elementType, elementPlaceHolder, elementMin, elementMax, isOpen, onChange, elementValue, formname}) {
 	
 function handleChangeLocal(event) {
 	const {name, value} = event.target;
@@ -13,7 +13,7 @@ function handleChangeLocal(event) {
 	return(
 			<label className="form__input-label">{elementLabel}
 				<input value={elementValue} type={elementType} className="form__input" name={elementName} minLength={elementMin} maxLength={elementMax} required placeholder={elementPlaceHolder} onChange={handleChangeLocal} />
-				<span id={`${elementName}-error`} className="form__error"></span>
+				<span id={`${elementName}-${formname}-error`} className="form__error"></span>
 			</label>
 
 	);

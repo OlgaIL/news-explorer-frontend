@@ -65,6 +65,7 @@ return(
 			isOpen={props.isOpen}
 			onChange={handleChange}
 			elementValue={inputValue.email}
+			formname = "login"
 			/>
 
 	<ElementForm 
@@ -77,6 +78,7 @@ return(
 			isOpen={props.isOpen}
 			onChange={handleChange}
 			elementValue={inputValue.password}
+			formname = "login"
 		/>
 
 	</PopupWithForm>

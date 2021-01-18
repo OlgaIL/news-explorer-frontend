@@ -26,10 +26,10 @@ function Profile(props) {
 	}
 
 	return (
-					<section className = "profile">
+					<div className = "profile">
 						<NavLink to="/saved-news" className={linkClass} activeClassName={linkActiveClass} onClick={props.onClickSavedPage}>Сохраненные статьи</NavLink>
 						<div className={buttonClass} onClick={signOut}><span className="profile__name">{currentUser.name}</span> <button className={imgClass} onClick={signOut} /></div>
-					</section>
+					</div>
 	
 	
 	);

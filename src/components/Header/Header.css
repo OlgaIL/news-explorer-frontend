@@ -172,13 +172,12 @@
 		background-color: black;
 		width: 100%;
 		height: 56px;
-		z-index: 1;
+		z-index: 5;
 	}
 
 	.header__logotext{
 		font-size: 16px;
 		z-index: 2;
-	
 	}
 
 	.header__nav{
@@ -265,6 +264,9 @@
 	.header__menu-icon:focus::after{
 		display: block;
 	}
+
+	/*.header{flex-direction: row-reverse;}*/
+
 
 	
 	
