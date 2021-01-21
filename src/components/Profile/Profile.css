@@ -1,0 +1,43 @@
+.profile{
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.profile__img{
+	width: 24px;
+	height: 24px;
+	background-image: url('../../images/logout_w.svg');
+	background-size: cover;
+	background-repeat: no-repeat;
+	border: 0;
+	cursor: pointer;
+	padding: 0;
+	background-color: unset;
+}
+
+.profile__img_theme_invert{
+	background-image: url('../../images/logout.svg');
+}
+
+.profile__img:focus{
+	outline-style: none;
+}
+
+.profile__name{
+	max-width: 150px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+@media all and (max-width: 600px) {
+	.profile{
+		flex-direction: column;
+		width: 100%;
+		box-sizing: border-box;
+		align-items: flex-start;
+		margin-top: 0;
+	}
+}
