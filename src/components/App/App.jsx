@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import useEvent  from 'use-add-event';
 
@@ -7,11 +7,18 @@ import Header from '../Header/Header';
 import Main from '../Main/Main';
 import About from '../About/About';
 
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute'; // импортируем HOC
+
 import SavedNews from '../SavedNews/SavedNews';
 import Footer from '../Footer/Footer';
 
-import {cards} from '../../constants/index';
 
+import api from '../../utils/NewsApi';
+import {setResult, getResult} from '../../utils/results';
+import {dateTo, dateFrom} from '../../utils/date';
+
+import  {setToken, getToken, removeToken} from '../../utils/token';
+import  userAuth from '../../utils/auth';
 
 import PopupWithLogin from '../PopupWithLogin/PopupWithLogin';
 import PopupWithRegistation from '../PopupWithRegistation/PopupWithRegistation';
@@ -23,13 +30,64 @@ import {CurrentUserContext} from '../../context/CurrentUserContext';
 
 function App() {
 
-	const [loggedIn , setIsLoggedIn] = React.useState(true);
+	const [loggedIn , setIsLoggedIn] = React.useState(false);
 	const [savedPage , setSavedPage] = React.useState(false);
-	const [currentUser, setCurrentUser] = React.useState({name: 'Вася Васильков Васильевич'});
+	const [currentUser, setCurrentUser] = React.useState({name: ''});
 	
 	const [isLoginPopupOpen, setIsLoginPopupOpen] = React.useState(false);
 	const [isRegistrPopupOpen, setIsRegistrPopupOpen] = React.useState(false);
 	const [isInfoPopupOpen, setIsInfoPopupOpen] = React.useState(false);
+	
+	const [isPreload, setIsPreload] = React.useState(false);
+	
+	const [cards, setCards] = React.useState([]);
+
+	const [statusSearch, setIsStatusSearch] = React.useState('');
+	const [totalResults, setIsTotalResults] = React.useState(-1);
+
+
+	function initState(res){
+		setCards(res.articles);
+		setIsStatusSearch(res.status);
+		setIsTotalResults(res.totalResults);
+
+	}
+
+	const resultCheck = () => {
+		const result = getResult();
+			if (!result) {
+			return;
+			}
+			initState(result);
+	}
+
+	const tokenCheck = () => {
+		const jwt = getToken();
+		if (!jwt) {
+		return;
+			}
+
+		userAuth.getContent(jwt).then((res) => {
+				if (res) {
+				// console.log(res);
+					const userName = {
+							name: res.name
+					}
+					setIsLoggedIn(true);
+					setCurrentUser(userName);
+				//	history.push('/cards')
+				}
+				
+			})
+			.catch(err => console.log( err));
+	}
+
+
+	useEffect(() => {
+		resultCheck();
+		// tokenCheck();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		}, []);
 
 	const history = useHistory();
 	
@@ -48,25 +106,44 @@ function App() {
 	useEvent('click', checkPopup);
 	useEvent('keydown', handleEscClose);
 
-/*
-useEffect(() => {
-	// Код подписки
-	document.addEventListener('keydown', handleEscClose);
-	document.addEventListener('click', checkPopup);
-	// Указываем как производить очистку после этого эффекта:
-	return function cleanup() {
-		document.removeEventListener('keydown', handleEscClose);
-		document.removeEventListener('click', checkPopup);
-	};
-  },[isLoginPopupOpen, isRegistrPopupOpen, isInfoPopupOpen]);
-  */
 
+	const handleOnSearch = async (query) => {
+		try{
+				setIsPreload(true);
+				const data = await api.getSearchCards(query, dateFrom, dateTo);
+				initState(data);
+				setResult(data);
+
+		} catch(error) { 
+			setIsStatusSearch("error");
+			console.log(error);
+		} finally { 
+			setIsPreload(false);
+		}
+	}
 
 	function handleOnLoguot(){
 		setIsLoggedIn(false);
 		history.push('/');
 		handleNotSavedPage();
 	}
+
+	function handleSubmitOnLogin(password, email){
+		userAuth.authorize(password, email)
+		.then((res) => {
+			if (res.token) {
+				setToken (res.token);
+				setIsLoggedIn(true);
+				tokenCheck();
+				//history.push('/');
+				closeAllPopups ()
+				}
+		})
+		.catch((err) => {console.log(err);});
+
+	}
+
+
 
 
 	function handleSavedPage () {
@@ -111,20 +188,20 @@ return (
 					onLogOut={handleOnLoguot} />
 
 					<Switch>
-						<Route path="/saved-news">
-							<SavedNews  savedPage={true}  cards={cards} />
-						</Route>
+						<ProtectedRoute path="/saved-news" loggedIn={loggedIn}>
+									<SavedNews savedPage={true}  cards={cards} />
+						</ProtectedRoute>
 
 						<Route exact path="/*" >
-							<Main  savedPage={savedPage} cards={cards} />
+							<Main cards={cards} statusSearch={statusSearch} totalResults={totalResults} onSearch={handleOnSearch} isPreload={isPreload}  loggedIn={loggedIn} onLogin={handleOnLogin} />
 							<About />
 						</Route>
-						
+
 					</Switch>
 				<Footer />
 			</div>
 			
-			<PopupWithLogin isOpen={isLoginPopupOpen} onClose={closeAllPopups} onRegistration = {handleOnRegistration} />
+			<PopupWithLogin isOpen={isLoginPopupOpen} onClose={closeAllPopups} onRegistration = {handleOnRegistration} onLogin={handleSubmitOnLogin}  />
 			<PopupWithRegistation isOpen={isRegistrPopupOpen} onClose={closeAllPopups} onLogin={handleOnLogin} />
 			<PopupWithInfo isOpen={isInfoPopupOpen} onClose={closeAllPopups}  onLogin={handleOnLogin}/>
 

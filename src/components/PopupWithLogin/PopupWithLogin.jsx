@@ -38,7 +38,13 @@ const [inputValue , setInputValue] = React.useState({
 
 	function handleSubmit (e) {
 		// Запрещаем браузеру переходить по адресу формы
-		e.preventDefault();
+			e.preventDefault();
+		// Передаём значения управляемых компонентов во внешний обработчик
+		const { email, password } = inputValue;
+		if (!email || !password){
+			return;
+		}
+		props.onLogin(password, email);
 	}
 
 return(

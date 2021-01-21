@@ -10,6 +10,9 @@
 	justify-content: space-between;
 }
 
+.element__top-panel_noactive{
+	justify-content: flex-start;
+}
 
 .element__tag{
 	background-color: #fff;
@@ -35,6 +38,7 @@
 	font-weight: 500;
 	font-size: 10px;
 	line-height: 12px;
+	text-decoration: none;
 }
 
 
@@ -53,12 +57,12 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin-left: 10px;
 }
 
 .element__button-img:focus {
 	outline: none;
 }
-
 
 .element__button-img {
 	height: 19px;

@@ -5,20 +5,26 @@ import CardHeader from '../CardHeader/CardHeader';
 
 
 function NewsCard(props) {
+	
+	function stringToDate(str){
+		var newDate = new Date(str);
+		const monthArray = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+		return newDate.getDate() + ' '+ monthArray[newDate.getMonth()]+ ", " +newDate.getFullYear();
+	}
+
 	return (
 			<li className="element">
-					<CardHeader  savedPage={props.savedPage} />
-							<img className="element__image" src={props.image} alt={props.name} />
+					<CardHeader {...props} />
+							<img className="element__image" src={props.urlToImage} alt={props.title} />
 								<div className="element__news">
-									<div className="element__data">{props.data}</div>
-									<ExternalLink href={props.link} className="element__title">{props.name}</ExternalLink>
-									<p className="element__text">{props.text}</p>
-									<ExternalLink  href="#"  className="element__source">{props.source}</ExternalLink>
+									<div className="element__data">{stringToDate(props.publishedAt)}</div>
+									<ExternalLink href={props.url} className="element__title">{props.title}</ExternalLink>
+									<p className="element__text">{props.description}</p>
+									<ExternalLink  href={props.url}  className="element__source">{props.source.name}</ExternalLink>
 								</div>
 			</li>
 	);
 }
-
 
 export default NewsCard;
 

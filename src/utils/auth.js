@@ -1,16 +1,36 @@
 //export const BASE_URL = 'https://auth.nomoreparties.co'; 
-import { BASE_URL } from './constants';
+import { BASE_URL_AUTH } from './constants';
+import { getToken } from './token';
 
 class Auth {
 	constructor(apiData) {
-        this.baseUrl = apiData.baseUrl;
-		this.headers = apiData.headers;
+			this.baseUrl = apiData.baseUrl;
+      		this.headers = apiData.headers;
 	}
+
+	
+	_handleOriginalResponse = (res) => {
+		if (!res.ok) {
+		return Promise.reject(new Error(`Ошибка: ${res.status}`));
+		}
+		return res.json();
+	}
+
+
+
+	
+	getHeaders(){
+			const token = getToken(); // тут мы получаем токен из localStorage
+			return {
+				...this.headers,
+				'Authorization': `Bearer ${token}`,
+			}
+		}
 
 
 	register (password, email) {
 	// console.log(JSON.stringify({password, email}));
-		return fetch(`${BASE_URL}signup`, {
+		return fetch(`${this.baseUrl}signup`, {
 			method: 'POST',
 			headers: this.headers,
 			body: JSON.stringify({password, email})
@@ -29,7 +49,7 @@ class Auth {
 
 
 	authorize (password, email) {
-		return fetch(`${BASE_URL}signin`, {
+		return fetch(`${this.baseUrl}signin`, {
 			method: 'POST',
 			headers: this.headers,
 			body: JSON.stringify({password, email})
@@ -47,12 +67,11 @@ class Auth {
 		.then(data => data);
 	};
 
+	//**  */
 	getContent (token) {
-		this.headers.Authorization =  `Bearer ${token}`;
-	// console.log(this.headers);
-			return fetch(`${BASE_URL}users/me`, {
-			method: 'GET',
-			headers: this.headers
+			return fetch(`${this.baseUrl}users/me`, {
+				method: 'GET',
+				headers: this.getHeaders()
 			})
 			.then(response => {
 						if(!response.ok){
@@ -65,10 +84,38 @@ class Auth {
 			})
 			.then(data => data);
 	};
+
+	getInitialCards() {
+		return fetch(`${this.baseUrl}cards`, {
+			headers: this.getHeaders()
+		})
+			.then(this._handleOriginalResponse);
+	}
+
+
+	deleteCard (id) {
+		return fetch(`${this.baseUrl}cards/${id}`, {
+			method: 'DELETE',
+			headers: this.getHeaders()
+		})
+		.then(this._handleOriginalResponse);
+	}
+	
+	createCard (item) { 
+		return fetch(`${this.baseUrl}cards`, {
+			method: 'POST',
+			headers: this.getHeaders(),
+			body: JSON.stringify(item)
+		})
+		.then(this._handleOriginalResponse);
+	}
+
+
 }
 
 const userAuth = new Auth({
 	//baseUrl: 'https://olgail.students.nomoredomains.rocks',
+	baseUrl: `${BASE_URL_AUTH}`,
 	headers: {
 		'Content-Type': 'application/json',
 		'Accept': 'application/json'

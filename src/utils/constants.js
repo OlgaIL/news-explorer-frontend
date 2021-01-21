@@ -1,1 +1,2 @@
-export const BASE_URL = 'https://api.olgai.students.nomoredomains.rocks/';
+export const BASE_URL = 'https://newsapi.org/v2/everything?language=ru&apiKey=9e67a2c23aab43618784d891cfc6970e&pageSize=100&sortBy=relevancy';
+export const  BASE_URL_AUTH = 'https://api.olganews.students.nomoredomains.rocks/';

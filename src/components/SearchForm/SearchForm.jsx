@@ -3,7 +3,7 @@ import './SearchForm.css';
 import SubmitButton from '../SubmitButton/SubmitButton';
 
 
-function SearchForm() {
+function SearchForm(props) {
 	const submitType = 'search'
 
 	const [submitStatus , setSubmitStatus] = React.useState(false);
@@ -25,6 +25,7 @@ function SearchForm() {
 	function handleSubmit (e) {
 		// Запрещаем браузеру переходить по адресу формы
 		e.preventDefault();
+		props.onSearch(inputValue);
 	}
 
 

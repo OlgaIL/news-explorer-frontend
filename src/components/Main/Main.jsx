@@ -7,12 +7,12 @@ import Preloader from '../Preloader/Preloader';
 import './Main.css';
 
 function Main (props) {
+
 	return (
 		<main className="content">
-				<SearchForm  />
-				<Preloader />
-				<NoCardList />
-				<NewsCardList {...props} />
+				<SearchForm  {...props} />
+				{props.isPreload && <Preloader />}
+				{!props.isPreload && props.cards.length ? ( <NewsCardList {...props} /> ) :( <NoCardList statusSearch={props.statusSearch} totalResults={props.totalResults}  isPreload={props.isPreload}/>) }
 		</main>
 	);
 }
