@@ -8,11 +8,13 @@ import './Main.css';
 
 function Main (props) {
 
+	const pages = Math.ceil(props.totalResults/3);
+
 	return (
 		<main className="content">
 				<SearchForm  {...props} />
 				{props.isPreload && <Preloader />}
-				{!props.isPreload && props.cards.length ? ( <NewsCardList {...props} /> ) :( <NoCardList statusSearch={props.statusSearch} totalResults={props.totalResults}  isPreload={props.isPreload}/>) }
+				{!props.isPreload && props.totalResults ? ( <NewsCardList {...props} pages={pages} /> ) :( <NoCardList statusSearch={props.statusSearch} totalResults={props.totalResults}  isPreload={props.isPreload}/>) }
 		</main>
 	);
 }

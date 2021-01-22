@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './CardHeader.css';
-import deleteButton  from '../../images/delete.svg';
 import saveButton from '../../images/save.svg';
-// import savedButton from '../../images/saved.svg';
+import savedButton from '../../images/saved.svg';
 
 function CardHeader(props) {
 	const [enterInfo , setIsEnterInfo] = React.useState(false);
@@ -12,16 +11,41 @@ function CardHeader(props) {
 		if (!props.loggedIn) setIsEnterInfo(!enterInfo);
 	}
 
-	const tagClass = (
-		//`${!props.savedPage ? 'element__tag' : 'element__tag element__tag_show'}`
-		`element__tag ${props.savedPage && ` element__tag_show`}`
-	);
+
+	function handleClick(){
+		if (props.loggedIn) {
+			props.onCardSave({
+				keyword: props.searchQuery,
+				title: props.title,
+				text : props.description ,
+				source : props.source.name ,
+				link : props.url,
+				image : props.urlToImage,
+				date: props.publishedAt
+			});
+		}else {
+			props.onLogin();
+		}
+	}
+
+
+	function selectCard(link){
+		if (props.savedPage) {return 'deleteButton'}
+		else {return props.selectCard(link);}
+	}
+
 
 	return (
-				<div className={`element__top-panel ${enterInfo && `element__top-panel_noactive`}`}>
-					<div className="element__button"><img tabIndex="2" src={props.savedPage ? deleteButton : saveButton } className="element__button-img" alt={props.savedPage ? 'Удалить' : 'Сохранить'} onMouseOver={handleOver}/></div>
-					{enterInfo && <Link onClick={props.onLogin} className="element__tag element__tag_title element__tag_show">Войдите, чтобы сохранять статьи</Link>}
-					<div className={tagClass}>Природа</div>
+				<div className={`element__top-panel ${!props.savedPage && `element__top-panel_noactive`}`}>
+					<div className="element__button">
+						<img tabIndex="2" src={selectCard(props.url) ? savedButton : saveButton}
+						className="element__button-img" 
+						alt={props.savedPage ? 'Удалить' : 'Сохранить'}
+						onMouseOver={!props.loggedIn && handleOver}
+						onClick={handleClick}/>
+						</div>
+					{enterInfo && !props.savedPage && <Link onClick={props.onLogin} className="element__tag element__tag_title element__tag_show">Войдите, чтобы сохранять статьи</Link>}
+					{props.savedPage && <div className="element__tag  element__tag_show">{props.keyword}</div>}
 				</div>
 	);
 }

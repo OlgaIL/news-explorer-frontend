@@ -1,6 +1,7 @@
 //export const BASE_URL = 'https://auth.nomoreparties.co'; 
 import { BASE_URL_AUTH } from './constants';
-import { getToken } from './token';
+import { getLocal } from './local';
+
 
 class Auth {
 	constructor(apiData) {
@@ -20,7 +21,7 @@ class Auth {
 
 	
 	getHeaders(){
-			const token = getToken(); // тут мы получаем токен из localStorage
+			const token = getLocal('jwt'); // тут мы получаем токен из localStorage
 			return {
 				...this.headers,
 				'Authorization': `Bearer ${token}`,
@@ -85,8 +86,8 @@ class Auth {
 			.then(data => data);
 	};
 
-	getInitialCards() {
-		return fetch(`${this.baseUrl}cards`, {
+	getSavedCards() {
+		return fetch(`${this.baseUrl}articles`, {
 			headers: this.getHeaders()
 		})
 			.then(this._handleOriginalResponse);
@@ -94,7 +95,7 @@ class Auth {
 
 
 	deleteCard (id) {
-		return fetch(`${this.baseUrl}cards/${id}`, {
+		return fetch(`${this.baseUrl}articles/${id}`, {
 			method: 'DELETE',
 			headers: this.getHeaders()
 		})
@@ -102,7 +103,7 @@ class Auth {
 	}
 	
 	createCard (item) { 
-		return fetch(`${this.baseUrl}cards`, {
+		return fetch(`${this.baseUrl}articles`, {
 			method: 'POST',
 			headers: this.getHeaders(),
 			body: JSON.stringify(item)

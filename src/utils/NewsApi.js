@@ -16,7 +16,6 @@ class Api {
 
 
 	getHeaders(){
-	//	const token = getToken(); // тут мы получаем токен из localStorage
 		return {
 			...this.headers
 		//, 	'Authorization': `Bearer ${token}`,
@@ -38,11 +37,9 @@ class Api {
 const api = new Api({
 	baseUrl: `${BASE_URL}`,
 	headers: {
-	//	authorization: 'b5b09145-9ffa-43dc-a8a7-afd53c9e00bd',
-	//	'Content-Type': 'application/json'
+		//	'Content-Type': 'application/json'
 	}
 });
-
 
 export default api;
 

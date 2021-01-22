@@ -2,7 +2,7 @@ import React from 'react';
 import './NewsCard.css';
 import { ExternalLink } from 'react-external-link';
 import CardHeader from '../CardHeader/CardHeader';
-
+import CardSaveHeader from '../CardSaveHeader/CardSaveHeader';
 
 function NewsCard(props) {
 	
@@ -12,9 +12,10 @@ function NewsCard(props) {
 		return newDate.getDate() + ' '+ monthArray[newDate.getMonth()]+ ", " +newDate.getFullYear();
 	}
 
+
 	return (
 			<li className="element">
-					<CardHeader {...props} />
+					{props.savedPage ? <CardSaveHeader {...props} /> : <CardHeader {...props} />}
 							<img className="element__image" src={props.urlToImage} alt={props.title} />
 								<div className="element__news">
 									<div className="element__data">{stringToDate(props.publishedAt)}</div>
@@ -27,4 +28,5 @@ function NewsCard(props) {
 }
 
 export default NewsCard;
+
 

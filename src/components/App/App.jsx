@@ -14,10 +14,12 @@ import Footer from '../Footer/Footer';
 
 
 import api from '../../utils/NewsApi';
-import {setResult, getResult} from '../../utils/results';
+import {setLocal, getLocal, removeLocal} from '../../utils/local';
+
 import {dateTo, dateFrom} from '../../utils/date';
 
-import  {setToken, getToken, removeToken} from '../../utils/token';
+
+
 import  userAuth from '../../utils/auth';
 
 import PopupWithLogin from '../PopupWithLogin/PopupWithLogin';
@@ -42,27 +44,28 @@ function App() {
 	
 	const [cards, setCards] = React.useState([]);
 
-	const [statusSearch, setIsStatusSearch] = React.useState('');
-	const [totalResults, setIsTotalResults] = React.useState(-1);
+	const [savedCards, setSavedCards] = React.useState([]);
 
+	const [searchQuery, setSearchQuery] = React.useState({query:'', status: '', totalResults: '' });
+	
+	const history = useHistory();
 
-	function initState(res){
-		setCards(res.articles);
-		setIsStatusSearch(res.status);
-		setIsTotalResults(res.totalResults);
-
-	}
-
-	const resultCheck = () => {
-		const result = getResult();
+	const resultAndQueryCheck = () => {
+		const result = getLocal('searchResult');
 			if (!result) {
 			return;
 			}
-			initState(result);
+			setCards(result);
+		
+		const query = getLocal('searchQuery');
+			if (!query) {
+			return;
+			}
+			setSearchQuery(query);
 	}
 
 	const tokenCheck = () => {
-		const jwt = getToken();
+		const jwt = getLocal('jwt');
 		if (!jwt) {
 		return;
 			}
@@ -83,13 +86,51 @@ function App() {
 	}
 
 
-	useEffect(() => {
-		resultCheck();
-		// tokenCheck();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		}, []);
+	const loadSavedCards = async ()  => {
+		try{
+			setIsPreload(true);
+			const data = await userAuth.getSavedCards();
+			const tmpCards = data.map(
+				function (element) {
+					const newElement = {
+						"source" : { 
+								"id": element.source,
+								"name": element.source
+							},
+						"title": element.title,
+						"description":  element.text,
+						"url": element.link,
+						"urlToImage": element.image,
+						"publishedAt":  element.date,
+						"keyword" : element.keyword,
+						"_id" : element._id
+					}
+					return newElement;
+			});
 
-	const history = useHistory();
+			setSavedCards(tmpCards);
+			console.log(savedCards);
+
+		} catch(error) { 
+			console.log(error);
+		} finally { 
+			setIsPreload(false);
+		}
+	}
+
+
+	useEffect(() => {
+		resultAndQueryCheck();
+		tokenCheck();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+
+	useEffect(() => {
+		if (loggedIn) loadSavedCards();
+		}, [loggedIn]);
+
+
 	
 	const  handleEscClose = (evt) => {
 		// console.log("слушаем кнопки");
@@ -111,12 +152,26 @@ function App() {
 		try{
 				setIsPreload(true);
 				const data = await api.getSearchCards(query, dateFrom, dateTo);
-				initState(data);
-				setResult(data);
+				setCards(data.articles);
+				
+				setSearchQuery({
+					query : query,
+					status: data.status,
+					totalResults: data.totalResults
+				})
+
+				setLocal('searchResult', data.articles);
+				setLocal('searchQuery', searchQuery);
+
 
 		} catch(error) { 
-			setIsStatusSearch("error");
 			console.log(error);
+			setSearchQuery({
+				query : query,
+				status: "error",
+				totalResults: 0
+			})
+
 		} finally { 
 			setIsPreload(false);
 		}
@@ -132,7 +187,7 @@ function App() {
 		userAuth.authorize(password, email)
 		.then((res) => {
 			if (res.token) {
-				setToken (res.token);
+				setLocal ('jwt', res.token);
 				setIsLoggedIn(true);
 				tokenCheck();
 				//history.push('/');
@@ -140,10 +195,48 @@ function App() {
 				}
 		})
 		.catch((err) => {console.log(err);});
+	}
 
+	function handleCardSave (card) {
+		console.log(card);
+		userAuth.createCard(card)
+		.then((newCard) => {
+			const tmpCards =  {
+						"source" : { 
+								"id": newCard.source,
+								"name": newCard.source
+							},
+						"title": newCard.title,
+						"description":  newCard.text,
+						"url": newCard.link,
+						"urlToImage": newCard.image,
+						"publishedAt":  newCard.date,
+						"keyword" : newCard.keyword
+					};
+
+			setSavedCards([tmpCards, ...savedCards]); 
+	// ?
+		})
+		.catch(err=>console.log(err));
+	}
+
+	function selectCard(link) {
+		const saved = savedCards.some(function(item) {
+			return item.url === link;
+		});
+			console.log(saved); 
+			return saved;
 	}
 
 
+	function handleCardDelete(id) {
+		userAuth.deleteCard(id)
+			.then(() => {
+				const newCards = savedCards.filter(c => c._id !== id);
+				setSavedCards(newCards);
+			})
+			.catch(err=>console.log(err));
+	}
 
 
 	function handleSavedPage () {
@@ -189,11 +282,19 @@ return (
 
 					<Switch>
 						<ProtectedRoute path="/saved-news" loggedIn={loggedIn}>
-									<SavedNews savedPage={true}  cards={cards} />
+									<SavedNews savedPage={true}  cards={savedCards} onDelete={handleCardDelete}/>
 						</ProtectedRoute>
 
 						<Route exact path="/*" >
-							<Main cards={cards} statusSearch={statusSearch} totalResults={totalResults} onSearch={handleOnSearch} isPreload={isPreload}  loggedIn={loggedIn} onLogin={handleOnLogin} />
+							<Main cards={cards} statusSearch={searchQuery.status} totalResults={searchQuery.totalResults} searchQuery={searchQuery.query} 
+							onSearch={handleOnSearch} 
+							isPreload={isPreload}  
+							loggedIn={loggedIn} 
+							onLogin={handleOnLogin} 
+							onCardSave={handleCardSave} 
+							selectCard={selectCard}
+							onDelete={handleCardDelete}/>
+
 							<About />
 						</Route>
 
