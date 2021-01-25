@@ -9,7 +9,7 @@ import './Main.css';
 function Main (props) {
 
 	const pages = Math.ceil(props.totalResults/3);
-
+	
 	return (
 		<main className="content">
 				<SearchForm  {...props} />

@@ -29,8 +29,6 @@ function Header(props) {
 	);
 
 
-
-
 	return (
 		<header className={headerClass}>
 			<NavLink to="/" exact className={logoClass} activeClassName="header__logotext_active">NewsExplorer</NavLink>

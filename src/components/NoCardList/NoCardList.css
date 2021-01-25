@@ -1,5 +1,5 @@
 .noCardList {
-	margin: 0;
+	margin: 0 auto;
 	background-color: #F5F6F7;
 	/*overflow: hidden;*/
 	display: none;
@@ -16,6 +16,11 @@
 }
 
 
+.noCardList_info{
+	text-align: center;
+}
+
+
 .noCardList__title{
 	font-family: ' Roboto Slab', 'Times New Roman', Times, serif;
 	font-style: normal;
@@ -24,6 +29,7 @@
 	line-height: 1.15;
 	color: #1A1B22;
 	margin: 40px 0 16px 0;
+	text-align: center;
 }
 
 .noCardList__text {
@@ -41,10 +47,25 @@
 	.noCardList{
 		padding-top: 40px;
 		padding-bottom: 40px;
+		margin: 0 auto;
 	}
 
 	.noCardList__title{
 		font-size: 24px;
+		text-align: center;
 	}
+}
+
+	@media screen and (max-width: 320px) {
+		.noCardList{
+			padding: 10px 20px;
+			align-content: center;
+			margin: 0 auto;
+		}
+	
+		.noCardList__title{
+			font-size: 24px;
+			text-align: center;
+		}
 
 }

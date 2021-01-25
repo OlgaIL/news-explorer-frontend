@@ -2,13 +2,10 @@ import React from 'react';
 import './CardSaveHeader.css';
 import deleteButton  from '../../images/delete.svg';
 
-
 function CardSaveHeader(props) {
-
 	function handleClick(){
 		props.onDelete(props._id);
 	}
-
 	return (
 				<div className="element__top-panel">
 					<div className="element__button">

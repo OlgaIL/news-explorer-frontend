@@ -8,13 +8,14 @@ function CardHeader(props) {
 	const [enterInfo , setIsEnterInfo] = React.useState(false);
 
 	const handleOver = (e) => {
-		if (!props.loggedIn) setIsEnterInfo(!enterInfo);
+		if (props.loggedIn) return;
+		setIsEnterInfo(!enterInfo);
 	}
 
 	function handleClick(){
 		if (props.loggedIn && !selectCard(props.url)) {
 				props.onCardSave({
-						keyword: props.searchQuery,
+						keyword: props.searchQuery.toLowerCase(),
 						title: props.title,
 						text : props.description,
 						source : props.source.name ,
@@ -24,12 +25,13 @@ function CardHeader(props) {
 			});
 		}else{
 			if (!props.loggedIn) {
-					props.onLogin();
+					props.onRegistration();
 				}else{
 					props.onDelete(selectCard(props.url)._id);
 				}
 		}
 	}
+
 
 	function selectCard(link){
 		return props.selectCard(link);
@@ -38,13 +40,12 @@ function CardHeader(props) {
 
 	return (
 				<div className="element__top-panel element__top-panel_noactive">
-					<div className="element__button">
+					<div className="element__button" onClick={handleClick} onMouseOver={handleOver}>
 						<img 
 						src={props.loggedIn ? (!selectCard(props.url) ? saveButton : savedButton) : saveButton }
 						className={`element__button-img ${!selectCard(props.url) ? '' : 'element__button-img_saved'}`} 
 						alt={selectCard(props.url) ? 'Удалить' : 'Сохранить'}
-						onMouseOver={!props.loggedIn && handleOver}
-						onClick={handleClick}/>
+						/>
 					</div>
 					{enterInfo &&  <Link onClick={props.onRegistration} className="element__tag element__tag_title element__tag_show">Войдите, чтобы сохранять статьи</Link>}
 				</div>

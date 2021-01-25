@@ -1,34 +1,26 @@
-import React, { useEffect } from 'react';
-import {Redirect, Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import React, { useEffect, useCallback } from 'react';
+import {Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import useEvent  from 'use-add-event';
 
 import './App.css';
 import Header from '../Header/Header';
 import Main from '../Main/Main';
 import About from '../About/About';
-
-import ProtectedRoute from '../ProtectedRoute/ProtectedRoute'; // импортируем HOC
-
 import SavedNews from '../SavedNews/SavedNews';
 import Footer from '../Footer/Footer';
 
-
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute'; // импортируем HOC
 import api from '../../utils/NewsApi';
 import {setLocal, getLocal, removeLocal} from '../../utils/local';
 
 import {dateTo, dateFrom} from '../../utils/date';
-
-
-
 import  userAuth from '../../utils/auth';
 
 import PopupWithLogin from '../PopupWithLogin/PopupWithLogin';
 import PopupWithRegistation from '../PopupWithRegistation/PopupWithRegistation';
 import PopupWithInfo from '../PopupWithInfo/PopupWithInfo';
 
-
 import {CurrentUserContext} from '../../context/CurrentUserContext';
-
 
 function App() {
 
@@ -45,19 +37,19 @@ function App() {
 	const [cards, setCards] = React.useState([]);
 
 	const [savedCards, setSavedCards] = React.useState([]);
-	const [searchQuery, setSearchQuery] = React.useState({query:'', status: '', totalResults: '' });
-	
-	const history = useHistory();
+	const [searchQuery, setSearchQuery] = React.useState({query:'', status: '', totalResults: 0 });
 
+	const [inputValue, setValues] = React.useState({});
+	const [errors, setErrors] = React.useState({});
+	const [isValid, setIsValid] = React.useState(false);
+	const [errorMessage, setErrorMessage] = React.useState({});
+
+	const history = useHistory();
 	const location = useLocation().pathname;
 
 	useEffect(() =>{
 		if(location === "/saved-news"){ handleSavedPage() }else{handleNotSavedPage()}
 	},[location])
-
-	
-	
-	
 
 
 	const resultAndQueryCheck = () => {
@@ -75,7 +67,10 @@ function App() {
 	}
 
 	const tokenCheck = () => {
+		
 		const jwt = getLocal('jwt');
+		//console.log(jwt);
+
 		if (!jwt) {
 		return;
 			}
@@ -88,7 +83,6 @@ function App() {
 					}
 					setIsLoggedIn(true);
 					setCurrentUser(userName);
-				//	history.push('/cards')
 				}
 				
 			})
@@ -132,7 +126,7 @@ function App() {
 	useEffect(() => {
 		resultAndQueryCheck();
 		tokenCheck();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+		
 	}, []);
 
 
@@ -140,6 +134,9 @@ function App() {
 		if (loggedIn) loadSavedCards();
 		}, [loggedIn]);
 
+	useEffect(() => {
+			resetForm();
+		}, [isLoginPopupOpen, isRegistrPopupOpen]);
 
 	
 	const  handleEscClose = (evt) => {
@@ -169,9 +166,12 @@ function App() {
 					status: data.status,
 					totalResults: data.totalResults
 				})
+			
 
-				setLocal('searchResult', data.articles);
-				setLocal('searchQuery', searchQuery);
+			if(data.totalResults>0){
+					setLocal('searchResult', data.articles);
+					setLocal('searchQuery', searchQuery);
+				}
 
 
 		} catch(error) { 
@@ -195,7 +195,8 @@ function App() {
 	}
 
 
-	function handleSubmitOnLogin(password, email){
+	function handleSubmitOnLogin(){
+		const {password, email}  =  inputValue;
 		userAuth.authorize(password, email)
 		.then((res) => {
 			if (res.token) {
@@ -204,26 +205,33 @@ function App() {
 				tokenCheck();
 				//history.push('/');
 				closeAllPopups ();
+				resetForm();
 				}
 		})
-		.catch((err) => {console.log(err);});
+		.catch((err) => {
+			setErrorMessage(err);
+			console.log(err)
+		});
 	}
 
 
-	function handleSubmitOnRegister (password, email, name) {
+	function handleSubmitOnRegister () {
+		const {password, email, name}  =  inputValue;
 		userAuth.register(password, email, name)
 			.then((data) => {
-				console.log(data);
+				//console.log(data);
 				if (data) {
 					closeAllPopups();
 					setIsInfoPopupOpen(true);
 				}
 			})
-			.catch((err) => {console.log(err)});
+			.catch((err) => {
+				setErrorMessage(err);
+				console.log(err)});
 	}
 
 	function handleCardSave (card) {
-		console.log(card);
+		//console.log(card);
 		userAuth.createCard(card)
 		.then((newCard) => {
 			const tmpCards =  {
@@ -239,12 +247,12 @@ function App() {
 						"keyword" : newCard.keyword,
 						"_id" : newCard._id
 					};
-
 			setSavedCards([tmpCards, ...savedCards]); 
 	// ?
 		})
 		.catch(err=>console.log(err));
 	}
+
 
 	function selectCard(link) {
 		const saved = savedCards.find(function(item) {
@@ -293,6 +301,30 @@ function App() {
 }
 
 
+
+
+	const handleChange = (event) => {
+		const target = event.target;
+		const name = target.name;
+		const value = target.value;
+		setValues({...inputValue, [name]: value});
+		setErrors({...errors, [name]: target.validationMessage });
+		setIsValid(target.closest("form").checkValidity());
+	};
+
+
+	const resetForm = useCallback(
+		(newValues = {}, newErrors = {}, newIsValid = false, newErrorMessage ={}) => {
+			setValues(newValues);
+			setErrors(newErrors);
+			setIsValid(newIsValid);
+			setErrorMessage(newErrorMessage);
+			},
+		[setValues, setErrors, setIsValid, setErrorMessage]
+	);
+
+
+
 return (
 	<CurrentUserContext.Provider value={currentUser}>
 		<div className="App">
@@ -305,10 +337,8 @@ return (
 					onLogOut={handleOnLoguot} />
 
 
-					<Switch>
-
-						
-					<ProtectedRoute path="/saved-news" loggedIn={loggedIn}>
+				<Switch>
+					<ProtectedRoute path="/saved-news" loggedIn={loggedIn} onClickLogin={handleOnLogin}>
 						<SavedNews savedPage={savedPage}  cards={savedCards} onDelete={handleCardDelete}/>
 					</ProtectedRoute>
 
@@ -322,7 +352,8 @@ return (
 							onRegistration = {handleOnRegistration}
 							onCardSave={handleCardSave} 
 							selectCard={selectCard}
-							onDelete={handleCardDelete}/>
+							onDelete={handleCardDelete}
+							savedPage={savedPage}/>
 							<About />
 						</Route>
 
@@ -331,8 +362,28 @@ return (
 				<Footer />
 			</div>
 			
-			<PopupWithLogin isOpen={isLoginPopupOpen} onClose={closeAllPopups} onRegistration = {handleOnRegistration} onLogin={handleSubmitOnLogin}  />
-			<PopupWithRegistation isOpen={isRegistrPopupOpen} onClose={closeAllPopups} onLogin={handleOnLogin} onRegistration={handleSubmitOnRegister} />
+			<PopupWithLogin 
+				isOpen={isLoginPopupOpen} 
+				onClose={closeAllPopups} 
+				onRegistration = {handleOnRegistration} 
+				onLogin={handleSubmitOnLogin} 
+				handleChange={handleChange} 
+				inputValue={inputValue}
+				errors = {errors}
+				submitStatus = {isValid}
+				errorMessage= {errorMessage.statusText} />
+
+			<PopupWithRegistation 
+				isOpen={isRegistrPopupOpen} 
+				onClose={closeAllPopups} 
+				onLogin={handleOnLogin} 
+				onRegistration={handleSubmitOnRegister} 
+				handleChange= {handleChange}
+				inputValue={inputValue}
+				errors = {errors}
+				submitStatus = {isValid}
+				errorMessage= {errorMessage.statusText} />
+
 			<PopupWithInfo isOpen={isInfoPopupOpen} onClose={closeAllPopups}  onLogin={handleOnLogin}/>
 
 		</div>

@@ -6,6 +6,7 @@ import CardSaveHeader from '../CardSaveHeader/CardSaveHeader';
 
 function NewsCard(props) {
 	
+	
 	function stringToDate(str){
 		var newDate = new Date(str);
 		const monthArray = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
@@ -13,6 +14,7 @@ function NewsCard(props) {
 	}
 
 
+	
 	return (
 			<li className="element">
 					{props.savedPage ? <CardSaveHeader {...props} /> : <CardHeader {...props} />}

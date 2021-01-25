@@ -7,7 +7,6 @@ import NewsCard from '../NewsCard/NewsCard';
 function NewsCardList(props) {
 
 	const allPageCounts = props.pages;
-	console.log(allPageCounts);
 	const [currentIndex , setIsCurrentIndex] = React.useState(allPageCounts-1);
 	
 	const cardsForThree = (index) => {
@@ -19,7 +18,6 @@ function NewsCardList(props) {
 	function handleClick(){
 		const index =  currentIndex - 1;
 		setIsCurrentIndex(index);
-		console.log(currentIndex);
 	}
 	//props.totalResults
 

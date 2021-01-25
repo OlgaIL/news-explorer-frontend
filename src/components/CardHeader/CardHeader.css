@@ -31,6 +31,11 @@
 	color: #000000;
 	margin: 0px;
 
+	max-width: 150px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+
 }
 
 .element__tag_title{

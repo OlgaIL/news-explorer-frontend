@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useCallback} from 'react';
 import PopupWithForm from '../PopupWithForm/PopupWithForm';
 import ElementForm from '../ElementForm/ElementForm';
 import './PopupWithLogin.css';
@@ -6,45 +6,10 @@ import './PopupWithLogin.css';
 
 function PopupWithLogin(props) {
 
-const [inputValue , setInputValue] = React.useState({
-		email: '',
-		password: ''
-	});
-
-	const [submitStatus , setSubmitStatus] = React.useState(false);
-
-
-	useEffect(() => {
-				setInputValue({
-					email :  '',
-					password : ''
-				});
-	}, [props.isOpen]);
-
-
-	function handleChange ({name, value}) {
-		setInputValue({
-			...inputValue,
-			[name]: value,
-		});
-	}
-
-	
-	useEffect(() => {
-		if ((inputValue.email!=='')&&(inputValue.password!=='')){setSubmitStatus(true);}
-			else {setSubmitStatus(false)};
-	}, [inputValue]);
-
-
 	function handleSubmit (e) {
 		// Запрещаем браузеру переходить по адресу формы
-			e.preventDefault();
-		// Передаём значения управляемых компонентов во внешний обработчик
-		const { email, password } = inputValue;
-		if (!email || !password){
-			return;
-		}
-		props.onLogin(password, email);
+		e.preventDefault();
+		if (props.submitStatus){props.onLogin();}
 	}
 
 return(
@@ -53,26 +18,26 @@ return(
 		title = "Вход"
 		submitText = "Войти"
 		onSubmit={handleSubmit}
-		submitStatus={submitStatus}
+		submitStatus={props.submitStatus}
 		isOpen = {props.isOpen}
 		onClose = {props.onClose}
 		onClick = {props.onRegistration}
 		formText="или "
 		subLinkText="Зарегистрироваться"
+		errorMessage={props.errorMessage}
 		>
 
 	<ElementForm 
 			elementLabel="Email"
 			elementName="email"
-			elementType="text"
+			elementType="email"
 			elementPlaceHolder="Введите почту"
 			elementMin="2"
 			elementMax="40"
-			isOpen={props.isOpen}
-			onChange={handleChange}
-			elementValue={inputValue.email}
+			onChange={props.handleChange}
+			elementValue={props.inputValue.email || ''}
 			formName = "login"
-			textError=""
+			textError={props.errors.email}
 			/>
 
 	<ElementForm 
@@ -82,11 +47,10 @@ return(
 			elementPlaceHolder="Введите пароль"
 			elementMin="8"
 			elementMax="24"
-			isOpen={props.isOpen}
-			onChange={handleChange}
-			elementValue={inputValue.password}
+			onChange={props.handleChange}
+			elementValue={props.inputValue.password || ''}
 			formName = "login"
-			textError=""
+			textError={props.errors.password}
 		/>
 
 	</PopupWithForm>

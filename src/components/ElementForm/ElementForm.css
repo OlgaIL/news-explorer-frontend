@@ -36,10 +36,25 @@
 	color: #F00;
 	margin-top: 3px;
 	display: block;
-	height: 14px;
+	height: 18px;
 }
 
 .form__error_type_sever{
 	align-self: center;
 	margin-bottom: 8px;
+}
+
+
+@media all  and (min-width: 321px) and (max-width:780px) {
+	.form__error {
+		height: 24px;
+	}
+}
+
+
+@media all and (max-width: 320px) {
+	.form__error {
+		height:33px;
+	}
+
 }

@@ -4,7 +4,7 @@ class Api {
     constructor(apiData) {
         this.baseUrl = apiData.baseUrl;
 		this.headers = apiData.headers; /** объект */
-		console.log(this.baseUrl);
+
 	}
 
 	_handleOriginalResponse = (res) => {

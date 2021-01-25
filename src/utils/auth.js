@@ -9,6 +9,7 @@ class Auth {
       		this.headers = apiData.headers;
 	}
 
+
 	
 	_handleOriginalResponse = (res) => {
 		if (!res.ok) {
@@ -16,8 +17,6 @@ class Auth {
 		}
 		return res.json();
 	}
-
-
 
 	
 	getHeaders(){
@@ -37,10 +36,11 @@ class Auth {
 			body: JSON.stringify({password, email, name})
 			})
 			.then(response => {
-			// console.log(response);
+			//console.log(response);
 				if(!response.ok){
 					const errorMassage = {status: response.status};
 					if(response.status === 400){errorMassage.statusText = 'Некорректно заполнено одно из полей';}
+					if(response.status === 403){errorMassage.statusText = 'Пользователь с такой почтой уже зарегистрирован';}
 						return Promise.reject(errorMassage);
 				}
 				return response.json();
@@ -56,11 +56,11 @@ class Auth {
 			body: JSON.stringify({password, email})
 		})
 		.then(response => {
-			//console.log(response);
+			// console.log(response);
 			if(!response.ok){
 				const errorMassage = {status: response.status};
 				if(response.status === 400){errorMassage.statusText = 'Не передано одно из полей';}
-				if(response.status === 401){errorMassage.statusText = 'Пользователь с email не найден';}
+				if(response.status === 401){errorMassage.statusText = 'Неправильные почта или пароль';}
 				return Promise.reject(errorMassage);
 			}
 			return response.json();
@@ -74,15 +74,7 @@ class Auth {
 				method: 'GET',
 				headers: this.getHeaders()
 			})
-			.then(response => {
-						if(!response.ok){
-							const errorMassage = {status: response.status};
-							if(response.status === 400){errorMassage.statusText = 'Токен не передан или передан не в том формате';}
-							if(response.status === 401){errorMassage.statusText = 'Переданный токен некорректен';}
-						return Promise.reject(errorMassage);
-						}
-			return response.json();
-			})
+			.then(this._handleOriginalResponse)
 			.then(data => data);
 	};
 
