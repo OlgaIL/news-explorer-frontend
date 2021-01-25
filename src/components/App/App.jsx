@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import {Redirect, Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import useEvent  from 'use-add-event';
 
 import './App.css';
@@ -45,10 +45,20 @@ function App() {
 	const [cards, setCards] = React.useState([]);
 
 	const [savedCards, setSavedCards] = React.useState([]);
-
 	const [searchQuery, setSearchQuery] = React.useState({query:'', status: '', totalResults: '' });
 	
 	const history = useHistory();
+
+	const location = useLocation().pathname;
+
+	useEffect(() =>{
+		if(location === "/saved-news"){ handleSavedPage() }else{handleNotSavedPage()}
+	},[location])
+
+	
+	
+	
+
 
 	const resultAndQueryCheck = () => {
 		const result = getLocal('searchResult');
@@ -90,7 +100,7 @@ function App() {
 		try{
 			setIsPreload(true);
 			const data = await userAuth.getSavedCards();
-			const tmpCards = data.map(
+			const savedCards = data.map(
 				function (element) {
 					const newElement = {
 						"source" : { 
@@ -108,11 +118,11 @@ function App() {
 					return newElement;
 			});
 
-			setSavedCards(tmpCards);
-			console.log(savedCards);
+			setSavedCards(savedCards);
 
 		} catch(error) { 
 			console.log(error);
+
 		} finally { 
 			setIsPreload(false);
 		}
@@ -179,22 +189,37 @@ function App() {
 
 	function handleOnLoguot(){
 		setIsLoggedIn(false);
+		removeLocal('jwt');
 		history.push('/');
 		handleNotSavedPage();
 	}
+
 
 	function handleSubmitOnLogin(password, email){
 		userAuth.authorize(password, email)
 		.then((res) => {
 			if (res.token) {
-				setLocal ('jwt', res.token);
+				setLocal('jwt', res.token);
 				setIsLoggedIn(true);
 				tokenCheck();
 				//history.push('/');
-				closeAllPopups ()
+				closeAllPopups ();
 				}
 		})
 		.catch((err) => {console.log(err);});
+	}
+
+
+	function handleSubmitOnRegister (password, email, name) {
+		userAuth.register(password, email, name)
+			.then((data) => {
+				console.log(data);
+				if (data) {
+					closeAllPopups();
+					setIsInfoPopupOpen(true);
+				}
+			})
+			.catch((err) => {console.log(err)});
 	}
 
 	function handleCardSave (card) {
@@ -211,7 +236,8 @@ function App() {
 						"url": newCard.link,
 						"urlToImage": newCard.image,
 						"publishedAt":  newCard.date,
-						"keyword" : newCard.keyword
+						"keyword" : newCard.keyword,
+						"_id" : newCard._id
 					};
 
 			setSavedCards([tmpCards, ...savedCards]); 
@@ -221,11 +247,10 @@ function App() {
 	}
 
 	function selectCard(link) {
-		const saved = savedCards.some(function(item) {
+		const saved = savedCards.find(function(item) {
 			return item.url === link;
 		});
-			console.log(saved); 
-			return saved;
+				return saved;
 	}
 
 
@@ -272,38 +297,42 @@ return (
 	<CurrentUserContext.Provider value={currentUser}>
 		<div className="App">
 			<div className="page">
-				<Header  
+				<Header 
 					loggedIn={loggedIn} 
 					savedPage={savedPage} 
 					onClickSavedPage={handleSavedPage} 
-					onClickNotSavedPage={handleNotSavedPage} 
 					onLogin={handleOnLogin}
 					onLogOut={handleOnLoguot} />
 
-					<Switch>
-						<ProtectedRoute path="/saved-news" loggedIn={loggedIn}>
-									<SavedNews savedPage={true}  cards={savedCards} onDelete={handleCardDelete}/>
-						</ProtectedRoute>
 
-						<Route exact path="/*" >
+					<Switch>
+
+						
+					<ProtectedRoute path="/saved-news" loggedIn={loggedIn}>
+						<SavedNews savedPage={savedPage}  cards={savedCards} onDelete={handleCardDelete}/>
+					</ProtectedRoute>
+
+
+						<Route exact path="/" >
 							<Main cards={cards} statusSearch={searchQuery.status} totalResults={searchQuery.totalResults} searchQuery={searchQuery.query} 
 							onSearch={handleOnSearch} 
 							isPreload={isPreload}  
 							loggedIn={loggedIn} 
-							onLogin={handleOnLogin} 
+							onLogin={handleOnLogin}
+							onRegistration = {handleOnRegistration}
 							onCardSave={handleCardSave} 
 							selectCard={selectCard}
 							onDelete={handleCardDelete}/>
-
 							<About />
 						</Route>
+
 
 					</Switch>
 				<Footer />
 			</div>
 			
 			<PopupWithLogin isOpen={isLoginPopupOpen} onClose={closeAllPopups} onRegistration = {handleOnRegistration} onLogin={handleSubmitOnLogin}  />
-			<PopupWithRegistation isOpen={isRegistrPopupOpen} onClose={closeAllPopups} onLogin={handleOnLogin} />
+			<PopupWithRegistation isOpen={isRegistrPopupOpen} onClose={closeAllPopups} onLogin={handleOnLogin} onRegistration={handleSubmitOnRegister} />
 			<PopupWithInfo isOpen={isInfoPopupOpen} onClose={closeAllPopups}  onLogin={handleOnLogin}/>
 
 		</div>

@@ -43,6 +43,11 @@ function PopupWithRegistation(props) {
 	function handleSubmit(e) {
 		// Запрещаем браузеру переходить по адресу формы
 		e.preventDefault();
+		const { email, password, name } = inputValue;
+		if (!email || !password){
+			return;
+		}
+		props.onRegistration(password, email, name);
 	}
 
 

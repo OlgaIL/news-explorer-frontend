@@ -11,41 +11,42 @@ function CardHeader(props) {
 		if (!props.loggedIn) setIsEnterInfo(!enterInfo);
 	}
 
-
 	function handleClick(){
-		if (props.loggedIn) {
-			props.onCardSave({
-				keyword: props.searchQuery,
-				title: props.title,
-				text : props.description ,
-				source : props.source.name ,
-				link : props.url,
-				image : props.urlToImage,
-				date: props.publishedAt
+		if (props.loggedIn && !selectCard(props.url)) {
+				props.onCardSave({
+						keyword: props.searchQuery,
+						title: props.title,
+						text : props.description,
+						source : props.source.name ,
+						link : props.url,
+						image : props.urlToImage,
+						date: props.publishedAt
 			});
-		}else {
-			props.onLogin();
+		}else{
+			if (!props.loggedIn) {
+					props.onLogin();
+				}else{
+					props.onDelete(selectCard(props.url)._id);
+				}
 		}
 	}
 
-
 	function selectCard(link){
-		if (props.savedPage) {return 'deleteButton'}
-		else {return props.selectCard(link);}
+		return props.selectCard(link);
 	}
 
 
 	return (
-				<div className={`element__top-panel ${!props.savedPage && `element__top-panel_noactive`}`}>
+				<div className="element__top-panel element__top-panel_noactive">
 					<div className="element__button">
-						<img tabIndex="2" src={selectCard(props.url) ? savedButton : saveButton}
-						className="element__button-img" 
-						alt={props.savedPage ? 'Удалить' : 'Сохранить'}
+						<img 
+						src={props.loggedIn ? (!selectCard(props.url) ? saveButton : savedButton) : saveButton }
+						className={`element__button-img ${!selectCard(props.url) ? '' : 'element__button-img_saved'}`} 
+						alt={selectCard(props.url) ? 'Удалить' : 'Сохранить'}
 						onMouseOver={!props.loggedIn && handleOver}
 						onClick={handleClick}/>
-						</div>
-					{enterInfo && !props.savedPage && <Link onClick={props.onLogin} className="element__tag element__tag_title element__tag_show">Войдите, чтобы сохранять статьи</Link>}
-					{props.savedPage && <div className="element__tag  element__tag_show">{props.keyword}</div>}
+					</div>
+					{enterInfo &&  <Link onClick={props.onRegistration} className="element__tag element__tag_title element__tag_show">Войдите, чтобы сохранять статьи</Link>}
 				</div>
 	);
 }

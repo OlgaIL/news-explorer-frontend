@@ -29,12 +29,12 @@ class Auth {
 		}
 
 
-	register (password, email) {
+	register (password, email, name) {
 	// console.log(JSON.stringify({password, email}));
 		return fetch(`${this.baseUrl}signup`, {
 			method: 'POST',
 			headers: this.headers,
-			body: JSON.stringify({password, email})
+			body: JSON.stringify({password, email, name})
 			})
 			.then(response => {
 			// console.log(response);
