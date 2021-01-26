@@ -6,21 +6,29 @@ import './App.css';
 import Header from '../Header/Header';
 import Main from '../Main/Main';
 import About from '../About/About';
+
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute'; // импортируем HOC
+
 import SavedNews from '../SavedNews/SavedNews';
 import Footer from '../Footer/Footer';
 
-import ProtectedRoute from '../ProtectedRoute/ProtectedRoute'; // импортируем HOC
+
 import api from '../../utils/NewsApi';
 import {setLocal, getLocal, removeLocal} from '../../utils/local';
 
 import {dateTo, dateFrom} from '../../utils/date';
+
+
+
 import  userAuth from '../../utils/auth';
 
 import PopupWithLogin from '../PopupWithLogin/PopupWithLogin';
 import PopupWithRegistation from '../PopupWithRegistation/PopupWithRegistation';
 import PopupWithInfo from '../PopupWithInfo/PopupWithInfo';
 
+
 import {CurrentUserContext} from '../../context/CurrentUserContext';
+
 
 function App() {
 
@@ -37,14 +45,14 @@ function App() {
 	const [cards, setCards] = React.useState([]);
 
 	const [savedCards, setSavedCards] = React.useState([]);
+
 	const [searchQuery, setSearchQuery] = React.useState({query:'', status: '', totalResults: 0 });
 
-	const [inputValue, setValues] = React.useState({});
-	const [errors, setErrors] = React.useState({});
-	const [isValid, setIsValid] = React.useState(false);
+	
 	const [errorMessage, setErrorMessage] = React.useState({});
 
 	const history = useHistory();
+
 	const location = useLocation().pathname;
 
 	useEffect(() =>{
@@ -53,24 +61,23 @@ function App() {
 
 
 	const resultAndQueryCheck = () => {
-		const result = getLocal('searchResult');
+			const result = getLocal('searchResult');
 			if (!result) {
 			return;
 			}
 			setCards(result);
 		
-		const query = getLocal('searchQuery');
-			if (!query) {
+		const searchQuery = getLocal('searchQuery');
+			if (!searchQuery) {
 			return;
 			}
-			setSearchQuery(query);
+			//console.log(searchQuery);
+			setSearchQuery(searchQuery);
 	}
 
-	const tokenCheck = () => {
-		
-		const jwt = getLocal('jwt');
-		//console.log(jwt);
 
+		const tokenCheck = () => {
+		const jwt = getLocal('jwt');
 		if (!jwt) {
 		return;
 			}
@@ -83,6 +90,7 @@ function App() {
 					}
 					setIsLoggedIn(true);
 					setCurrentUser(userName);
+				
 				}
 				
 			})
@@ -126,7 +134,7 @@ function App() {
 	useEffect(() => {
 		resultAndQueryCheck();
 		tokenCheck();
-		
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 
@@ -134,9 +142,6 @@ function App() {
 		if (loggedIn) loadSavedCards();
 		}, [loggedIn]);
 
-	useEffect(() => {
-			resetForm();
-		}, [isLoginPopupOpen, isRegistrPopupOpen]);
 
 	
 	const  handleEscClose = (evt) => {
@@ -159,28 +164,27 @@ function App() {
 		try{
 				setIsPreload(true);
 				const data = await api.getSearchCards(query, dateFrom, dateTo);
-				setCards(data.articles);
-				
-				setSearchQuery({
-					query : query,
-					status: data.status,
-					totalResults: data.totalResults
-				})
-			
+						
+				//console.log(data);
+				const sQuery = {
+				"query" : query,
+				"status": data.status,
+				"totalResults" : data.totalResults}
 
-			if(data.totalResults>0){
-					setLocal('searchResult', data.articles);
-					setLocal('searchQuery', searchQuery);
-				}
+			
+				setLocal('searchResult', data.articles);
+				setLocal('searchQuery', sQuery);
+				
+				setCards(data.articles);
+				setSearchQuery(sQuery);
 
 
 		} catch(error) { 
 			console.log(error);
-			setSearchQuery({
-				query : query,
-				status: "error",
-				totalResults: 0
-			})
+				setSearchQuery({
+				"query" : query,
+				"status" : "error",
+				"totalResults" : ""});
 
 		} finally { 
 			setIsPreload(false);
@@ -242,7 +246,7 @@ function App() {
 						"title": newCard.title,
 						"description":  newCard.text,
 						"url": newCard.link,
-						"urlToImage": newCard.image,
+						"urlToImage": newCard.image,  
 						"publishedAt":  newCard.date,
 						"keyword" : newCard.keyword,
 						"_id" : newCard._id
@@ -301,27 +305,34 @@ function App() {
 }
 
 
+	useEffect(() => {
+		resetForm();
+	}, [isLoginPopupOpen, isRegistrPopupOpen]);
+
+const [inputValue, setValues] = React.useState({});
+const [errors, setErrors] = React.useState({});
+const [isValid, setIsValid] = React.useState(false);
 
 
-	const handleChange = (event) => {
-		const target = event.target;
-		const name = target.name;
-		const value = target.value;
-		setValues({...inputValue, [name]: value});
-		setErrors({...errors, [name]: target.validationMessage });
-		setIsValid(target.closest("form").checkValidity());
-	};
+const handleChange = (event) => {
+    const target = event.target;
+    const name = target.name;
+    const value = target.value;
+    setValues({...inputValue, [name]: value});
+    setErrors({...errors, [name]: target.validationMessage });
+    setIsValid(target.closest("form").checkValidity());
+};
 
 
-	const resetForm = useCallback(
-		(newValues = {}, newErrors = {}, newIsValid = false, newErrorMessage ={}) => {
-			setValues(newValues);
-			setErrors(newErrors);
-			setIsValid(newIsValid);
-			setErrorMessage(newErrorMessage);
-			},
-		[setValues, setErrors, setIsValid, setErrorMessage]
-	);
+const resetForm = useCallback(
+    (newValues = {}, newErrors = {}, newIsValid = false, newErrorMessage ={}) => {
+		setValues(newValues);
+		setErrors(newErrors);
+		setIsValid(newIsValid);
+		setErrorMessage(newErrorMessage);
+		},
+    [setValues, setErrors, setIsValid, setErrorMessage]
+);
 
 
 
@@ -344,7 +355,7 @@ return (
 
 
 						<Route exact path="/" >
-							<Main cards={cards} statusSearch={searchQuery.status} totalResults={searchQuery.totalResults} searchQuery={searchQuery.query} 
+							<Main cards={cards} statusSearch={searchQuery.status} totalResults={searchQuery.totalResults} searchQuery={searchQuery.query}
 							onSearch={handleOnSearch} 
 							isPreload={isPreload}  
 							loggedIn={loggedIn} 
@@ -352,8 +363,7 @@ return (
 							onRegistration = {handleOnRegistration}
 							onCardSave={handleCardSave} 
 							selectCard={selectCard}
-							onDelete={handleCardDelete}
-							savedPage={savedPage}/>
+							onDelete={handleCardDelete}/>
 							<About />
 						</Route>
 

@@ -10,7 +10,7 @@ import {CurrentUserContext} from '../../context/CurrentUserContext';
 function SavedNews(props) {
 	const currentUser = React.useContext(CurrentUserContext); // подписываем на контекст
 	const  totalResults = props.cards.length;
-	
+
 	const keyWords = props.cards.map(function (item) { return item.keyword.toLowerCase(); });
 	const resultKeyWord = keyWords.reduce(function (prevVal, item) {
 		if (!prevVal[item]) {
@@ -23,9 +23,20 @@ function SavedNews(props) {
 		// и вернём изменённый объект
 		return prevVal;
 	  }, []); // Начальное значение
+	  
 
-	const totalKeyWords = Object.keys(resultKeyWord);
+
+	const  publicKeyWords = (keyWords) =>{
+	const totalKeyWords = Object.entries(keyWords).sort(( a, b ) =>  b[1] - a[1]);
+	const publicKeyWords = totalKeyWords.slice(0,2);
+	if (totalKeyWords.length >= 2) {publicKeyWords[0][0] = publicKeyWords[0][0] + ", "}
+
+	return publicKeyWords;
+	}
 	
+	const  lastKeyWords =  Object.entries(resultKeyWord).length - 2;
+		
+
 
 	return (
 		<main className="content">
@@ -33,8 +44,8 @@ function SavedNews(props) {
 				<p className="savedHeader__text">Сохранённые статьи</p>
 				<h1 className="savedHeader__title">{currentUser.name}, у вас {totalResults} сохранённых статей</h1>
 				{totalResults >0 && <p className="savedHeader__text savedHeader__text_black">По ключевым словам: 
-				{totalKeyWords.map((word, index)  => <span className="savedHeader__name"> {word}, </span> ) }
-				 и <span className="savedHeader__name"> другим</span></p> }
+				{publicKeyWords(resultKeyWord).map((word, index)  => <span className="savedHeader__name"> {word[0]} </span> ) } {lastKeyWords>0 && ' и '}
+				{lastKeyWords>0 && <span className="savedHeader__name">{lastKeyWords} другим</span>}</p> }
 			</section>
 
 			{props.isPreload && <Preloader />}

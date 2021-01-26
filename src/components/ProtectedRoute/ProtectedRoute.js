@@ -11,7 +11,7 @@ const ProtectedRoute = ({ loggedIn, ...routeProps }) => {
 				if(loggedIn) {return routeProps.children;}
 				else {
 				routeProps.onClickLogin();
-				return <Redirect to='./' />
+				return <Redirect to='/' />
 				}
 			}
 		}

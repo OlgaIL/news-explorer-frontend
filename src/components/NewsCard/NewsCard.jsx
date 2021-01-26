@@ -8,7 +8,7 @@ function NewsCard(props) {
 	
 	
 	function stringToDate(str){
-		var newDate = new Date(str);
+		const newDate = new Date(str);
 		const monthArray = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
 		return newDate.getDate() + ' '+ monthArray[newDate.getMonth()]+ ", " +newDate.getFullYear();
 	}
@@ -18,7 +18,7 @@ function NewsCard(props) {
 	return (
 			<li className="element">
 					{props.savedPage ? <CardSaveHeader {...props} /> : <CardHeader {...props} />}
-							<img className="element__image" src={props.urlToImage} alt={props.title} />
+							<img className="element__image" src={props.urlToImage || 'https://pchelp24.com/wp-content/uploads/2019/03/timthumb.png' } alt={props.title} />
 								<div className="element__news">
 									<div className="element__data">{stringToDate(props.publishedAt)}</div>
 									<ExternalLink href={props.url} className="element__title">{props.title}</ExternalLink>

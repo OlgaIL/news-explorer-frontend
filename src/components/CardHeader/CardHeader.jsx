@@ -20,7 +20,7 @@ function CardHeader(props) {
 						text : props.description,
 						source : props.source.name ,
 						link : props.url,
-						image : props.urlToImage,
+						image : props.urlToImage || 'https://pchelp24.com/wp-content/uploads/2019/03/timthumb.png',
 						date: props.publishedAt
 			});
 		}else{
