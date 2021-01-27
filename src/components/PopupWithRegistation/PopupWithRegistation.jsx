@@ -7,42 +7,10 @@ import './PopupWithRegistation.css';
 
 function PopupWithRegistation(props) {
 
-	const [inputValue , setInputValue] = React.useState({
-		email: '',
-		password: '',
-		name : ''
-	});
-
-	const [submitStatus , setSubmitStatus] = React.useState(false);
-
-
-	useEffect(() => {
-				setInputValue({
-					email :  '',
-					password : '',
-					name : ''
-				});
-	}, [props.isOpen]);
-
-
-	function handleChange ({name, value}) {
-		setInputValue({
-			...inputValue,
-			[name]: value,
-		});
-	}
-
-	
-	useEffect(() => {
-		if ((inputValue.email!=='')&&(inputValue.password!=='')){setSubmitStatus(true);}
-			else {setSubmitStatus(false)};
-	}, [inputValue]);
-
-
-
 	function handleSubmit(e) {
 		// Запрещаем браузеру переходить по адресу формы
 		e.preventDefault();
+		if(props.submitStatus) props.onRegistration();
 	}
 
 
@@ -52,25 +20,26 @@ return(
 		title = "Регистрация"
 		submitText = "Зарегистрироваться"
 		onSubmit={handleSubmit}
-		submitStatus={submitStatus}
+		submitStatus={props.submitStatus}
 		isOpen = {props.isOpen}
 		onClose = {props.onClose}
 		onClick = {props.onLogin}
 		formText="или "
 		subLinkText="Войти"
+		errorMessage={props.errorMessage}
 		>
 
 		<ElementForm 
 			elementLabel="Email"
 			elementName="email"
-			elementType="text"
+			elementType="email"
 			elementPlaceHolder="Введите e-mail"
 			elementMin="2"
 			elementMax="40"
-			isOpen={props.isOpen}
-			onChange={handleChange}
-			elementValue={inputValue.email}
-			formname = "registration"
+			onChange={props.handleChange}
+			elementValue={props.inputValue.email || ''}
+			textError={props.errors.email}
+			formName = "registration"
 			/>
 
 	<ElementForm 
@@ -80,10 +49,10 @@ return(
 			elementPlaceHolder="Введите пароль"
 			elementMin="8"
 			elementMax="24"
-			isOpen={props.isOpen}
-			onChange={handleChange}
-			elementValue={inputValue.password}
-			formname = "registration"
+			onChange={props.handleChange}
+			elementValue={props.inputValue.password || ''}
+			formName = "registration"
+			textError={props.errors.password}
 			
 		/>
 		
@@ -95,9 +64,10 @@ return(
 			elementPlaceHolder="Введите свое имя"
 			elementMin="2"
 			elementMax="60"
-			onChange={handleChange}
-			elementValue={inputValue.name}
-			formname = "registration"
+			onChange={props.handleChange}
+			elementValue={props.inputValue.name  || ''}
+			formName = "registration"
+			textError={props.errors.name}
 			/>
 
 

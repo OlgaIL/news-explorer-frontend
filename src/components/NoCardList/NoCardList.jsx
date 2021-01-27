@@ -3,12 +3,26 @@ import './NoCardList.css';
 import notFound  from '../../images/notfound.svg';
 
 
-function NoCardList() {
+function NoCardList(props) {
+	const noCardListClass = (
+		`noCardList ${(props.statusSearch ==='') || props.isPreload ? '' : 'noCardList_show'}`
+	);
+	// переписать условие!!! 
+
 	return (
-			<section className="noCardList noCardList_show">
-					<img src={notFound} className="noCardList__img" alt="Ничего не найдено" />
-					<h2 className="noCardList__titile">Ничего не найдено</h2>
-					<p className="noCardList__text">К сожалению, по вашему запросу ничего не найдено.</p>
+			<section className={noCardListClass}>
+				{ props.totalResults === 0 && (
+						<div className="noCardList_info">
+							<img src={notFound} className="noCardList__img" alt="Ничего не найдено" />
+							<h2 className="noCardList__titile">Ничего не найдено</h2>
+							<p className="noCardList__text">К сожалению, по вашему запросу ничего не найдено.</p>
+						</div> ) }
+				{ props.statusSearch==="error" && (
+						<div className="noCardList_info">
+							<h2 className="noCardList__titile">Во время запроса произошла ошибка.</h2>
+							<p className="noCardList__text">Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз</p>
+						</div>
+					) }
 			</section>
 	);
 }

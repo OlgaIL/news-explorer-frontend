@@ -22,10 +22,10 @@
 }
 
 
- /* *{
+/* *{
 	outline:1px solid green;
-	} 
-*/
+	} */
+
 
 	@media all  and (min-width: 321px) and (max-width:780px) {
 		.page {

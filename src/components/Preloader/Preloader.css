@@ -14,7 +14,7 @@
 }
 
 .preloader_show{
-	display: none;
+	display: flex;
 }
 
 

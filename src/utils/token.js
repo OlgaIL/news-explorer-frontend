@@ -1,3 +1,4 @@
+
 const TOKEN_KEY = 'jwt';
 
 export const setToken = (token) => {

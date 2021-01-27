@@ -18,7 +18,7 @@ function PopupWithForm (props) {
 						<div className="form__element">
 							<h2 className="form__title">{props.title}</h2>
 							{props.children}
-							<span id={`form-${props.name}-error`} className="form__error form__error_type_sever"></span>
+							<span id={`form-${props.name}-error`} className="form__error form__error_type_sever">{props.errorMessage || ''}</span>
 							{props.submitText!=='' ? <SubmitButton {...props} submitStatus={props.submitStatus}/> : ""}
 							<div className={footerFormClass}>{props.formText} <Link  className="form__footer-link" onClick={props.onClick}>{props.subLinkText}</Link></div>
 						</div>
