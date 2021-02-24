@@ -21,6 +21,7 @@ class Auth {
 	
 	getHeaders(){
 			const token = getLocal('jwt'); // тут мы получаем токен из localStorage
+			console.log(token);
 			return {
 				...this.headers,
 				'Authorization': `Bearer ${token}`,
