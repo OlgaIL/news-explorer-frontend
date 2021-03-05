@@ -1,7 +1,6 @@
 {
   "name": "news-explorer-frontend",
   "version": "0.1.0",
-  "homepage": "index.js",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.6",
@@ -18,6 +17,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "deploy": "npm run build && scp -r ./build/* zxolga10@84.201.179.201:/home/zxolga10/news-explorer-api/frontend/build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

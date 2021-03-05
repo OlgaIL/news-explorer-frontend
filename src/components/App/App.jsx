@@ -16,7 +16,8 @@ import Footer from '../Footer/Footer';
 
 
 import api from '../../utils/NewsApi';
-import {setLocal, getLocal, removeLocal} from '../../utils/local';
+import {setLocal, getLocal } from '../../utils/local';
+import {setToken, getToken, removeToken} from '../../utils/token';
 
 import {dateTo, dateFrom} from '../../utils/date';
 
@@ -80,7 +81,7 @@ const resultAndQueryCheck = () => {
 
 	const tokenCheck = () => {
 	
-		const jwt = getLocal('jwt');
+		const jwt = getToken();
 		if (!jwt) {
 		return;
 		}
@@ -99,7 +100,6 @@ const resultAndQueryCheck = () => {
 			
 		})
 		.catch(err => console.log(err));
-		
 }
 
 
@@ -137,8 +137,8 @@ const loadSavedCards = async ()  => {
 
 
 useEffect(() => {
-	resultAndQueryCheck();
-	tokenCheck();
+	 resultAndQueryCheck();
+	 tokenCheck();
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 
@@ -198,7 +198,7 @@ const handleOnSearch = async (query) => {
 
 function handleOnLoguot(){
 	setIsLoggedIn(false);
-	removeLocal('jwt');
+	removeToken();
 	history.push('/');
 	handleNotSavedPage();
 }
@@ -209,7 +209,7 @@ function handleSubmitOnLogin(){
 	userAuth.authorize(password, email)
 	.then((res) => {
 		if (res.token) {
-			setLocal('jwt', res.token);
+			setToken(res.token);
 			setIsLoggedIn(true);
 			tokenCheck();
 			//history.push('/');

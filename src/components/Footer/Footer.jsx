@@ -10,7 +10,7 @@ import logoFacebook from '../../images/logofacebook.svg';
 function Footer () {
 	return (
 		<footer className="footer">
-			<p className="footer__copyright">&copy; 2020 Supersite, Powered by News API</p>
+			<p className="footer__copyright">&copy; 2020 Ольга Ильина, Powered by News API</p>
 			<nav>
 				<ul className="footer__navbar">
 					<li className="footer__navbar-element">

@@ -1,6 +1,6 @@
 //export const BASE_URL = 'https://auth.nomoreparties.co'; 
 import { BASE_URL_AUTH } from './constants';
-import { getLocal } from './local';
+import { getToken } from './token';
 
 
 class Auth {
@@ -20,8 +20,8 @@ class Auth {
 
 	
 	getHeaders(){
-			const token = getLocal('jwt'); // тут мы получаем токен из localStorage
-			console.log(token);
+			const token = getToken(); // тут мы получаем токен из localStorage
+			// console.log(token);
 			return {
 				...this.headers,
 				'Authorization': `Bearer ${token}`,
