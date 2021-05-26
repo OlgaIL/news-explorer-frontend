@@ -9,6 +9,10 @@ https://www.figma.com/file/GBseer38BB588OcfN2HmsO/Diploma-WEB-v2.0-for-students?
 
 ***********
 
+клиентская часть по адресу -  http://olganews.students.nomoredomains.rocks/
+
+
+api  - https://api.olganews.students.nomoredomains.rocks/
 
 
 
