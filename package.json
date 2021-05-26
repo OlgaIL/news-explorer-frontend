@@ -17,7 +17,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "deploy": "npm run build && scp -r ./build/* zxolga10@84.201.179.201:/home/zxolga10/news-explorer-api/frontend/build",
+    "deploy": "npm run build && scp -r ./build/* zxolga10@84.252.139.233:/home/zxolga10/news-explorer-api/frontend/build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
